@@ -9,7 +9,7 @@ namespace WebApplication1.Controllers
     public class ProductsController : Controller
     {
         // GET: Products
-        public ActionResult Index()
+        public ActionResult display()
         {
             return View();
         }

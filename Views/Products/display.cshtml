@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "display";
+}
+  
+    <body background="~/export-map-share.png" style="background-size:100% 100%; background-attachment:fixed">
+        <canvas id="myCanvas" style="border:1px;">
+          <script>
+              var x = 20;
+              var y = 20;
+              var can = document.getElementById("myCanvas")
+              var ctx=can.getContext("2d")
+              ctx.beginPath();
+              ctx.arc(x, y, 5, 10,20* Math.PI, false);
+              ctx.fillStyle = "Red";
+              ctx.fill();
+          </script>
+        </canvas>
+    </body>

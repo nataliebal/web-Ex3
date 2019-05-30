@@ -18,8 +18,10 @@ namespace WebApplication1.Models
         static MyServer instance = null;
         private string serverIp ;
         private int serverPort;
+        public  bool set;
         private MyServer()
         {
+            set = false;
         }
         public string ServerIp { get { return serverIp; } set { ServerIp = value; } }
         public int Port { get { return serverPort; } set { serverPort = value; } }
@@ -33,7 +35,7 @@ namespace WebApplication1.Models
             else return instance;
         }
 
-        public void connect_server(int sign)
+        public void connect_server()
         {
             serverIp = data.Ip;
             Port = data.Port;
@@ -42,10 +44,7 @@ namespace WebApplication1.Models
             listener = new TcpListener(localAdd, Port);
             Console.WriteLine("Listening...");
             listener.Start();
-            // Task t = new Task(new Action(open));
-            //t.Start();
-            open(sign);
-            listener.Stop();
+          
            // Console.ReadLine();
         }
 
@@ -67,7 +66,7 @@ namespace WebApplication1.Models
                 string[] words = System.Text.Encoding.Default.GetString(buffer).Split(',');
                 data.Lon = Double.Parse(words[0]);
                 data.Lat = Double.Parse(words[1]);
-
+                set = true;
                 //---convert the data received into a string---
                 string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 Console.WriteLine("Received : " + dataReceived);
@@ -76,8 +75,13 @@ namespace WebApplication1.Models
                 Console.WriteLine("Sending back : " + dataReceived);
                 // nwStream.Write(buffer, 0, bytesRead);
                 //client.Close();
-                if (sign == 1) break;
+                if (sign == 1)
+                {
+                    listener.Stop();
+                    break;
+                }
             }
+            listener.Stop();
         }
     }
 }

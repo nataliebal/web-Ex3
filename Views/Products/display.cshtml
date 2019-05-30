@@ -6,14 +6,31 @@
     <body background="~/export-map-share.png" style="background-size:100% 100%; background-attachment:fixed">
         <canvas id="myCanvas" style="border:1px;">
           <script>
-              var lon = @ViewBag.lon;
-              var lat = @ViewBag.lat;
-              var can = document.getElementById("myCanvas")
-              var ctx=can.getContext("2d")
-              ctx.beginPath();
-              ctx.arc(lon, lat, 5, 10,20* Math.PI, false);
-              ctx.fillStyle = "Red";
-              ctx.fill();
+              var canvas = document.getElementById("myCanvas");
+              var ctx = canvas.getContext("2d");
+              var lon = parseFloat(@ViewBag.lon);
+              var lat = parseFloat(@ViewBag.lat);
+        function setLon() {
+        if (lon < 0)
+            lon = (canvas.width / 2) * (1 - Math.abs(lon) / 180)
+        else
+            lon = (canvas.width / 2) * (1 + Math.abs(lon) / 180)
+    }
+    function setLat() {
+        if (lat < 0)
+            lat = (canvas.height / 2) * (1 - Math.abs(lat) / 90)
+        else
+            lat = (canvas.height / 2) * (1 + Math.abs(lat) / 90)
+              }
+              setLon();
+              setLat();
+              function drawPoint(){
+                  ctx.beginPath();
+                  ctx.arc(parseFloat(lon), parseFloat(lat), 5, 10, 20 * Math.PI, false);
+                  ctx.fillStyle = "Red";
+                  ctx.fill();
+              }
+              drawPoint();
           </script>
         </canvas>
     </body>

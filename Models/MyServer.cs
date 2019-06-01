@@ -13,15 +13,22 @@ namespace WebApplication1.Models
 {
     class MyServer
     {
-       private DataModel data = DataModel.getInstance();
-        TcpListener listener;
+        private DataModel data;
+        private bool isConneted;
+        private NetworkStream stream;
+        private StreamReader sr;
+        private TcpClient client;
         static MyServer instance = null;
         private string serverIp ;
         private int serverPort;
-        public  bool set;
+        private readonly string latStr = "get /position/latitude-deg\r\n";
+        private readonly string lonStr= "get /position/longitude-deg\r\n";
+        private readonly string throttleStr = "get /controls/engines/current-engine/throttle\r\n";
+        private readonly string rudderStr = "get /controls/flight/rudder\r\n";
         private MyServer()
         {
-            set = false;
+            data = DataModel.getInstance();
+            isConneted = false;
         }
         public string ServerIp { get { return serverIp; } set { ServerIp = value; } }
         public int Port { get { return serverPort; } set { serverPort = value; } }
@@ -37,51 +44,40 @@ namespace WebApplication1.Models
 
         public void connect_server()
         {
+            if (isConneted) return;
             serverIp = data.Ip;
-            Port = data.Port;
-            //---listen at the specified IP and port no.---
-            IPAddress localAdd = IPAddress.Parse(ServerIp);
-            listener = new TcpListener(localAdd, Port);
-            Console.WriteLine("Listening...");
-            listener.Start();
-          
-           // Console.ReadLine();
+            Port = data.Port;    
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(serverIp), serverPort);
+            client = new TcpClient();
+            client.Connect(ep);
+            stream = client.GetStream();
+            sr = new StreamReader(stream);
+            isConneted = true;
         }
 
-        public void open(int sign)
+        public double getData(string message)
         {
-            while (true)
+            double data=0;
+            byte[] strMessage = Encoding.ASCII.GetBytes(message);
+            try
             {
-                //---incoming client connected---
-                TcpClient client = listener.AcceptTcpClient();
-
-                //---get the incoming data through a network stream---
-                NetworkStream nwStream = client.GetStream();
-                byte[] buffer = new byte[client.ReceiveBufferSize];
-
-                //---read incoming stream---
-                int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
-
-                //split the string by ,
-                string[] words = System.Text.Encoding.Default.GetString(buffer).Split(',');
-                data.Lon = Double.Parse(words[0]);
-                data.Lat = Double.Parse(words[1]);
-                set = true;
-                //---convert the data received into a string---
-                string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                Console.WriteLine("Received : " + dataReceived);
-
-                //---write back the text to the client---
-                Console.WriteLine("Sending back : " + dataReceived);
-                // nwStream.Write(buffer, 0, bytesRead);
-                //client.Close();
-                if (sign == 1)
-                {
-                    listener.Stop();
-                    break;
-                }
+                stream.Write(strMessage, 0, strMessage.Length);
+                string e = sr.ReadLine();
+                data = Double.Parse(e.Split('=')[1].Split(' ')[1].Split('\'')[1]);
             }
-            listener.Stop();
+            catch (Exception ex)
+            {
+                Console.Write("cannot connect\n");
+            }
+            return data;
+        }
+        public void open()
+        {
+            if (client == null) return;
+            data.Lat = getData(latStr);
+            data.Lon = getData(lonStr);
+            data.Throttle = getData(throttleStr);
+            data.Rudder = getData(rudderStr);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Threading.Tasks;
+using System.Threading;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -30,7 +30,7 @@ namespace WebApplication1.Controllers
             data.Ip = ip;
             data.Port = port;
             server.connect_server();
-            server.open(1);
+            server.open();
             ViewBag.lon = data.Lon;
             ViewBag.lat = data.Lat;
             return View();
@@ -41,23 +41,18 @@ namespace WebApplication1.Controllers
         {
             data.Ip = ip;
             data.Port = port;
+            data.Time = time;
             server.connect_server();
-            Task t = new Task(new Action(func));
-            t.Start();
-            //server.open(2);
-
-            while (true)
-            {
-                if (server.set) break;
-            }
+            server.open();
             ViewBag.lon = data.Lon;
             ViewBag.lat = data.Lat;
+            Session["time"] = time;
             return View();
         }
-
-        public void func()
+        [HttpPost]
+        public void GetData()
         {
-            server.open(2);
+            server.open();
         }
     }
 }

@@ -6,6 +6,8 @@
     <body background="~/export-map-share.png" style="background-size:100% 100%; background-attachment:fixed">
         <canvas id="myCanvas" style="border:1px;">
           <script>
+              //canvas.height = window.innerHeight;
+              //canvas.width = window.innerWidth;
               var canvas = document.getElementById("myCanvas");
               var ctx = canvas.getContext("2d");
               var lon = parseFloat(@ViewBag.lon);

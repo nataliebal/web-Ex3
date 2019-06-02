@@ -7,34 +7,20 @@
     <canvas id="myCanvas" style="border:1px;">
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
         <script>
-            //canvas.height = window.innerHeight;
-            //canvas.width = window.innerWidth;
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d")
             var prevLon = undefined;
             var prevLat = undefined;
             var lon = parseFloat(@ViewBag.lon);
             var lat = parseFloat(@ViewBag.lat);
-              function setLon() {
-              if (lon < 0)
-                 lon = (canvas.width / 2) * (1 - Math.abs(lon) / 180)
-              else
-                 lon = (canvas.width / 2) * (1 + Math.abs(lon) / 180)
-              }
-              function setLat() {
-                if (lat < 0)
-              lat = (canvas.height / 2) * (1 - Math.abs(lat) / 90)
-                else
-              lat = (canvas.height / 2) * (1 + Math.abs(lat) / 90)
-            }
             function drawLine(startX,startY,endX,endY) {
                 ctx.beginPath();
                 ctx.moveTo(startX, startY);
                 ctx.lineTo(endX, endY);
                 ctx.stroke();
             }
-            setLon();
-            setLat();
+           lon =   ((lon + 180)/360) * (window.innerWidth);
+           lat =  ((lat + 90)/180)* window.innerHeight ;
             function drawPoint() {
                 ctx.beginPath();
                 ctx.arc(parseFloat(lon), parseFloat(lat), 5, 10, 20 * Math.PI, false);
@@ -50,12 +36,8 @@
                     }
                     prevLon = lon;
                     prevLat = lat;
-                    lon = parseFloat(@ViewBag.lon);
-                    lon *= 5000;
-                    lat *= 5000;
-                    lat = parseFloat(@ViewBag.lat);
-                    setLon();
-                    setLat();
+                    lon =   ((parseFloat(@ViewBag.lon) + 180)/360) * window.innerWidth;
+                    lat =  ((parseFloat(@ViewBag.lat) + 90)/180)* window.innerHeight ;
                 })
             });
             setInterval(setDrawing, time);

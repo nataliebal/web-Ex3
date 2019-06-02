@@ -27,13 +27,26 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public ActionResult display(string ip, int port)
         {
-            data.Ip = ip;
-            data.Port = port;
-            server.connect_server();
-            server.open();
-            ViewBag.lon = data.Lon;
-            ViewBag.lat = data.Lat;
-            return View();
+            if (check(ip))
+            {
+                data.Ip = ip;
+                data.Port = port;
+                server.connect_server();
+                server.open();
+                ViewBag.lon = data.Lon;
+                ViewBag.lat = data.Lat;
+                return View("display");
+            }
+            else
+            {
+                data.Time = port;
+                data.FileName = ip;
+                ViewBag.lon = data.Lon;
+                ViewBag.lat = data.Lat;
+                Session["time"] = port;
+                data.initialize();
+                return View("Animation");
+            }
         }
 
         [HttpGet]
@@ -49,10 +62,55 @@ namespace WebApplication1.Controllers
             Session["time"] = time;
             return View();
         }
+
+        [HttpGet]
+        public ActionResult save(string ip, int port, int time, int duration,string fileName)
+        {
+            data.Ip = ip;
+            data.Port = port;
+            data.Time = time;
+            data.FileName = fileName;
+            server.connect_server();
+            server.open();
+            ViewBag.lon = data.Lon;
+            ViewBag.lat = data.Lat;
+            ViewBag.eof = data.Eof;
+            Session["time"] = time;
+            Session["duration"] = duration;
+            return View();
+        }
+
         [HttpPost]
         public void GetData()
         {
             server.open();
+            ViewBag.lon = data.Lon;
+            ViewBag.lat = data.Lat;
         }
+
+        [HttpPost]
+        public void WriteToFile()
+        {
+            server.open();
+            data.fileWriting();
+            ViewBag.lon = data.Lon;
+            ViewBag.lat = data.Lat;
+        }
+
+        [HttpPost]
+        public void LoadFromFile()
+        {
+            data.fileReading();
+            ViewBag.lon = data.Lon;
+            ViewBag.lat = data.Lat;
+        }
+
+        public bool check(string ip)
+        {
+            string[] parts = ip.Split('.');
+            if (parts.Length == 4) return true;
+            return false;
+        }
+
     }
 }

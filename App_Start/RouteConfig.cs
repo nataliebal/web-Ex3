@@ -19,17 +19,24 @@ namespace WebApplication1
     defaults: new { controller = "Products", action = "Index",id=UrlParameter.Optional }
 );
 
-            routes.MapRoute(
-                name: "display",
-                url: "{controller}/{action}/{ip}/{port}",
-                defaults: new { controller = "Products", action = "display"}
-            );
+routes.MapRoute(
+    name: "display",
+    url: "{controller}/{action}/{ip}/{port}",
+    defaults: new { controller = "Products", action = "display"}
+ );
 
             routes.MapRoute(
     name: "lineDisplay",
     url: "{controller}/{action}/{ip}/{port}/{time}",
     defaults: new { controller = "Products", action = "lineDisplay" }
 );
+
+ routes.MapRoute(
+name: "save",
+url: "{controller}/{action}/{ip}/{port}/{time}/{duration}/{fileName}",
+defaults: new { controller = "Products", action = "save" }
+);
+
         }
     }
 }

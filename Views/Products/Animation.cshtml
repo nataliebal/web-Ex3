@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "lineDisplay";
+    ViewBag.Title = "Animation";
 }
 
 <body background="~/export-map-share.png" style="background-size:100% 100%; background-attachment:fixed">
@@ -29,9 +29,12 @@
                 ctx.fillStyle = "Red";
                 ctx.fill();
             }
+            function getEof() {
+                return @ViewBag.eof;
+            }
             var time =@Session["time"]* 1000;
             setDrawing = (function () {
-                $.post("@Url.Action("GetData")").done(function () {
+                $.post("@Url.Action("LoadFromFile")").done(function () {
                     drawPoint();
                     if (prevLat != undefined && prevLon != undefined) {
                        drawLine(prevLon, prevLat, lon, lat);
@@ -39,14 +42,20 @@
                     prevLon = lon;
                     prevLat = lat;
                     lon =   ((parseFloat(@ViewBag.lon) + 180)/360) * window.innerWidth;
-                    lat =  ((parseFloat(@ViewBag.lat) + 90)/180)* window.innerHeight ;
+                    lat = ((parseFloat(@ViewBag.lat) + 90) / 180) * window.innerHeight;
+                    if ( getEof()== true) {
+                    clearInterval(interval);
+                    alert("done");
+            }
                 })
             });
-            setInterval(setDrawing, time);
+            var interval=setInterval(setDrawing, time);
             setDrawing();
         </script>
     </canvas>
 </body>
+
+
 
 
 

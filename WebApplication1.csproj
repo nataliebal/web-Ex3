@@ -134,6 +134,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Products\Index.cshtml" />
     <Content Include="Views\Products\lineDisplay.cshtml" />
+    <Content Include="Views\Products\save.cshtml" />
+    <Content Include="Views\Products\Animation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

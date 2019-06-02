@@ -7,6 +7,8 @@
         <canvas id="myCanvas" style="border:1px;">
           <script>
               var canvas = document.getElementById("myCanvas");
+              canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
               var ctx = canvas.getContext("2d");
               var lon = ((parseFloat(@ViewBag.lon) + 180)/360) * window.innerWidth;
               var lat = ((parseFloat(@ViewBag.lat) + 90)/180)* window.innerHeight ;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml;
 
 namespace WebApplication1.Models
 {
@@ -224,6 +225,15 @@ namespace WebApplication1.Models
             {
                 Console.WriteLine("wrong argument");
             }
+        }
+
+        public void ToXml(XmlWriter writer)
+        {
+            writer.WriteStartElement("Val");
+            writer.WriteElementString("Lon", this.Lon.ToString());
+            writer.WriteElementString("Lat", this.Lat.ToString());
+            writer.WriteElementString("EndOfFile", Eof.ToString());
+            writer.WriteEndElement();
         }
     }
    

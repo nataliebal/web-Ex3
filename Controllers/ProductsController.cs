@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Threading;
 using WebApplication1.Models;
+using System.Text;
+using System.Xml;
 
 namespace WebApplication1.Controllers
 {
@@ -41,10 +43,9 @@ namespace WebApplication1.Controllers
             {
                 data.Time = port;
                 data.FileName = ip;
-                ViewBag.lon = data.Lon;
-                ViewBag.lat = data.Lat;
-                Session["time"] = port;
                 data.initialize();
+                Session["time"] = port;
+                
                 return View("Animation");
             }
         }
@@ -84,8 +85,6 @@ namespace WebApplication1.Controllers
         public void GetData()
         {
             server.open();
-            ViewBag.lon = data.Lon;
-            ViewBag.lat = data.Lat;
         }
 
         [HttpPost]
@@ -93,16 +92,13 @@ namespace WebApplication1.Controllers
         {
             server.open();
             data.fileWriting();
-            ViewBag.lon = data.Lon;
-            ViewBag.lat = data.Lat;
         }
 
         [HttpPost]
-        public void LoadFromFile()
+        public string LoadFromFile()
         {
             data.fileReading();
-            ViewBag.lon = data.Lon;
-            ViewBag.lat = data.Lat;
+            return ToXml();
         }
 
         public bool check(string ip)
@@ -110,6 +106,24 @@ namespace WebApplication1.Controllers
             string[] parts = ip.Split('.');
             if (parts.Length == 4) return true;
             return false;
+        }
+
+        private string ToXml()
+        {
+            //Initiate XML stuff
+            StringBuilder sb = new StringBuilder();
+            XmlWriterSettings settings = new XmlWriterSettings();
+            XmlWriter writer = XmlWriter.Create(sb, settings);
+
+            writer.WriteStartDocument();
+            //writer.WriteStartElement("Val");
+
+           data.ToXml(writer);
+
+            //writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Flush();
+            return sb.ToString();
         }
 
     }

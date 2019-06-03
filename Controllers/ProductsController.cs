@@ -82,16 +82,18 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public void GetData()
+        public string GetData()
         {
             server.open();
+            return ToXml();
         }
 
         [HttpPost]
-        public void WriteToFile()
+        public string WriteToFile()
         {
             server.open();
             data.fileWriting();
+            return ToXml();
         }
 
         [HttpPost]

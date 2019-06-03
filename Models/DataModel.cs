@@ -176,7 +176,13 @@ namespace WebApplication1.Models
             string[] arr = str.Split('.');
             if (arr.Length > 1)
             {
-                arr[1] = arr[1].Substring(0,3);
+                try
+                {
+                    arr[1] = arr[1].Substring(0, 3);
+                }catch(Exception ex)
+                {
+
+                }
                 str = arr[0] +"."+ arr[1];
             }
             return str;

@@ -44,8 +44,7 @@ namespace WebApplication1.Controllers
                 data.Time = port;
                 data.FileName = ip;
                 data.initialize();
-                Session["time"] = port;
-                
+                Session["time"] = port;                
                 return View("Animation");
             }
         }
@@ -58,10 +57,8 @@ namespace WebApplication1.Controllers
             data.Time = time;
             server.connect_server();
             server.open();
-            ViewBag.lon = data.Lon;
-            ViewBag.lat = data.Lat;
             Session["time"] = time;
-            return View();
+            return View("lineDisplay");
         }
 
         [HttpGet]
@@ -73,12 +70,9 @@ namespace WebApplication1.Controllers
             data.FileName = fileName;
             server.connect_server();
             server.open();
-            ViewBag.lon = data.Lon;
-            ViewBag.lat = data.Lat;
-            ViewBag.eof = data.Eof;
             Session["time"] = time;
             Session["duration"] = duration;
-            return View();
+            return View("save");
         }
 
         [HttpPost]
